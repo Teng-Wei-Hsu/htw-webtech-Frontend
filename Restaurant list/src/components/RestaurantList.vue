@@ -34,7 +34,7 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:8080/restaurants')
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants`)
     restaurants.value = await response.json()
   } catch (error) {
     console.error('Error fetching restaurants:', error)
