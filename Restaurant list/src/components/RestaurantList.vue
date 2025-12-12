@@ -10,6 +10,7 @@
         v-for="restaurant in restaurants"
         :key="restaurant.id"
         :restaurant="restaurant"
+        @delete="deleteRestaurant"
       />
     </div>
   </section>
@@ -32,9 +33,12 @@ interface Restaurant {
 const restaurants = ref<Restaurant[]>([])
 const loading = ref(true)
 
+// Backend URL
+const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com/restaurants'
+
 onMounted(async () => {
   try {
-    const response = await fetch(`https://htw-webtech-backend-vvi9.onrender.com/restaurants`)
+    const response = await fetch(API_URL)
     restaurants.value = await response.json()
   } catch (error) {
     console.error('Error fetching restaurants:', error)
@@ -42,6 +46,21 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+// DELETE restaurant
+async function deleteRestaurant(id: number) {
+  try {
+    await fetch(`${API_URL}/${id}`, {
+      method: 'DELETE'
+    })
+
+    // remove from list
+    restaurants.value = restaurants.value.filter(r => r.id !== id)
+
+  } catch (error) {
+    console.error('Error deleting restaurant:', error)
+  }
+}
 </script>
 
 <style scoped>

@@ -22,6 +22,10 @@
         </li>
       </ul>
     </div>
+    <!-- NEW: Delete button -->
+    <button class="delete-btn" @click="emitDelete">
+      Delete
+    </button>
   </div>
 </template>
 
@@ -39,6 +43,16 @@ interface Restaurant {
 const props = defineProps<{
   restaurant: Restaurant
 }>()
+
+// declare events we emit
+const emit = defineEmits<{
+  (e: 'delete', id: number): void
+}>()
+
+// function to emit the delete event
+function emitDelete() {
+  emit('delete', props.restaurant.id)
+}
 </script>
 
 <style scoped>
@@ -64,5 +78,19 @@ const props = defineProps<{
   margin-top: 0.3rem;
   padding-left: 20px;
   list-style-type: disc;
+}
+
+.delete-btn {
+  margin-top: 1rem;
+  padding: 8px 12px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #d62828;
 }
 </style>
