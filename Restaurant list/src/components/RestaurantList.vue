@@ -35,7 +35,7 @@ const restaurants = ref<Restaurant[]>([])
 const loading = ref(true)
 
 // Backend URL
-const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com'
+const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com/restaurants'
 
 onMounted(async () => {
   try {
