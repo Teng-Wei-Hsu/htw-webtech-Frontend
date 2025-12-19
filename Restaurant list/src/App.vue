@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import RestaurantList from './components/RestaurantList.vue'
 </script>
 
 <template>
@@ -14,24 +13,24 @@ import RestaurantList from './components/RestaurantList.vue'
     />
 
     <div class="wrapper">
-      <h1>Top 10 Restaurants</h1>
+      <h1>Restaurant App</h1>
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/about">All Restaurants</RouterLink>
+        <RouterLink to="/add">Add Restaurant</RouterLink>
       </nav>
     </div>
   </header>
 
   <main>
-    <!-- Show your restaurant list here -->
-    <RestaurantList />
-    <!-- Keep RouterView for extra pages later -->
+    <!-- Routed views will be rendered here -->
     <RouterView />
   </main>
 </template>
 
 <style scoped>
+/* KEEP ALL YOUR EXISTING STYLES EXACTLY THE SAME */
 header {
   line-height: 1.5;
   max-height: 100vh;
