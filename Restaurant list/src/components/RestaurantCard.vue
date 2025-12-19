@@ -1,19 +1,19 @@
 <template>
   <div class="restaurant-card">
-    <h3>{{ restaurant.name }}</h3>
+    <h3>{{ restaurant.name || 'Unnamed Restaurant' }}</h3>
 
     <p>
       <strong>Location:</strong>
-      {{ restaurant.city }}, {{ restaurant.country }}
+      {{ restaurant.city || 'N/A' }}, {{ restaurant.country || 'N/A' }}
     </p>
 
-    <p><strong>Cuisine:</strong> {{ restaurant.cuisineType }}</p>
+    <p><strong>Cuisine:</strong> {{ restaurant.cuisineType || 'N/A' }}</p>
 
-    <p><strong>Rating:</strong> ⭐ {{ restaurant.rating }}</p>
+    <p><strong>Rating:</strong> ⭐ {{ restaurant.rating || 'N/A' }}</p>
 
     <div class="reviews">
       <strong>Reviews:</strong>
-      <ul>
+      <ul v-if="restaurant.reviews && restaurant.reviews.length > 0">
         <li
           v-for="(review, index) in restaurant.reviews"
           :key="index"
@@ -21,8 +21,10 @@
           "{{ review }}"
         </li>
       </ul>
+      <p v-else>No reviews yet</p>
     </div>
-    <!-- NEW: Delete button -->
+
+    <!-- Delete button -->
     <button class="delete-btn" @click="emitDelete">
       Delete
     </button>
@@ -31,7 +33,7 @@
 
 <script setup lang="ts">
 interface Restaurant {
-  id: number
+  id?: number          // Make id optional to avoid undefined errors
   name: string
   country: string
   city: string
@@ -44,13 +46,19 @@ const props = defineProps<{
   restaurant: Restaurant
 }>()
 
-// declare events we emit
 const emit = defineEmits<{
   (e: 'delete', id: number): void
 }>()
 
-// function to emit the delete event
+// Safe delete – check if id exists
 function emitDelete() {
+  if (props.restaurant.id === undefined) {
+    console.warn('Cannot delete: restaurant has no id!', props.restaurant)
+    alert('Cannot delete: missing restaurant ID')
+    return
+  }
+
+  console.log('Emitting delete for restaurant ID:', props.restaurant.id)
   emit('delete', props.restaurant.id)
 }
 </script>

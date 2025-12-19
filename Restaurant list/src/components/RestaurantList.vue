@@ -2,6 +2,7 @@
   <section class="restaurant-list">
     <h2>Our Top Restaurants</h2>
 
+
     <p v-if="loading" class="loading">Loading restaurants...</p>
 
     <div v-else class="restaurant-container">
@@ -34,7 +35,7 @@ const restaurants = ref<Restaurant[]>([])
 const loading = ref(true)
 
 // Backend URL
-const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com/restaurants'
+const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com'
 
 onMounted(async () => {
   try {
