@@ -69,19 +69,21 @@ async function deleteRestaurant(id: number) {
   margin-top: 2rem;
 }
 
-h2 {
-  color: var(--color-heading, #42b983);
-  margin-bottom: 1rem;
+.restaurant-list h2 {
+  font-size: 1.6rem;
+  color: #1f7a63;
+  margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .loading {
-  font-style: italic;
-  color: gray;
+  color: #777;
+  text-align: center;
 }
 
 .restaurant-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 </style>

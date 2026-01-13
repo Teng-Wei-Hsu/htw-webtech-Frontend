@@ -105,43 +105,64 @@ async function submitForm() {
 
 <style scoped>
 .add-restaurant {
-  max-width: 500px;
-  margin: 2rem auto;
+  max-width: 520px;
+  margin: 3rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.add-restaurant h2 {
+  margin-bottom: 1.5rem;
+  color: #1f7a63;
+  text-align: center;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
 input,
 textarea {
-  padding: 0.6rem;
-  border-radius: 6px;
+  padding: 0.7rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1f7a63;
 }
 
 button {
-  padding: 0.7rem;
-  background-color: #42b983;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background-color: #1f7a63;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #369f6e;
+  background-color: #196b57;
 }
 
 .success {
-  color: green;
+  color: #1f7a63;
   margin-top: 1rem;
+  text-align: center;
 }
 
 .error {
-  color: red;
+  color: #e63946;
   margin-top: 1rem;
+  text-align: center;
 }
 </style>
