@@ -1,6 +1,6 @@
 <template>
   <section class="restaurant-list">
-    <h1 class="page-title">Restaurants List</h1>
+    <h2 class="page-title">Restaurants List</h2>
 
 
     <p v-if="loading" class="loading">Loading restaurants...</p>
@@ -66,40 +66,41 @@ async function deleteRestaurant(id: number) {
 
 <style scoped>
 .restaurant-list {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+  margin-top: 2rem;
 }
 
+/* Centered title */
 .page-title {
   text-align: center;
-  font-size: 2.3rem;
-  color: #1f7a63;
-  margin-bottom: 2.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f3d2b;
+  margin-bottom: 2rem;
 }
 
+/* Loading text */
 .loading {
   text-align: center;
   color: #777;
-  font-size: 1rem;
 }
 
-/* 3 cards per row */
-.restaurant-grid {
+/* GRID LAYOUT */
+.restaurant-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 👈 EXACTLY 3 */
   gap: 2rem;
 }
 
-/* Responsive fallback */
-@media (max-width: 900px) {
-  .restaurant-grid {
+/* Tablet */
+@media (max-width: 1024px) {
+  .restaurant-container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 600px) {
-  .restaurant-grid {
+/* Mobile */
+@media (max-width: 640px) {
+  .restaurant-container {
     grid-template-columns: 1fr;
   }
 }
