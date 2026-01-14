@@ -1,7 +1,7 @@
 <template>
-  <RestaurantList />
+  <FavoriteRestaurantList />
 </template>
 
 <script setup lang="ts">
-import RestaurantList from '@/components/RestaurantList.vue'
+import FavoriteRestaurantList from '@/components/FavoriteRestaurantList.vue'
 </script>
