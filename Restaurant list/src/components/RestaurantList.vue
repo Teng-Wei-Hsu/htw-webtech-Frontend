@@ -12,6 +12,7 @@
         :key="restaurant.id"
         :restaurant="restaurant"
         @delete="deleteRestaurant"
+        @toggle-favorite="toggleFavorite"
       />
     </div>
   </section>
@@ -29,6 +30,7 @@ interface Restaurant {
   cuisineType: string
   rating: number
   reviews: string[]
+  favorite: boolean
 }
 
 const restaurants = ref<Restaurant[]>([])
@@ -55,11 +57,26 @@ async function deleteRestaurant(id: number) {
       method: 'DELETE'
     })
 
-    // remove from list
     restaurants.value = restaurants.value.filter(r => r.id !== id)
-
   } catch (error) {
     console.error('Error deleting restaurant:', error)
+  }
+}
+
+// ⭐ TOGGLE FAVORITE (FIXED)
+async function toggleFavorite(id: number) {
+  const restaurant = restaurants.value.find(r => r.id === id)
+  if (!restaurant) return
+
+  try {
+    await fetch(`${API_URL}/${id}/favorite`, {
+      method: 'PATCH'
+    })
+
+    // update local state
+    restaurant.favorite = !restaurant.favorite
+  } catch (error) {
+    console.error('Error toggling favorite:', error)
   }
 }
 </script>

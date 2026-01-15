@@ -86,6 +86,9 @@ function emitFavorite() {
 
 <style scoped>
 .restaurant-card {
+  display: flex;
+  flex-direction: column;
+
   background: #ffffff;
   border-radius: 14px;
   padding: 1.5rem;
@@ -156,18 +159,23 @@ function emitFavorite() {
 }
 
 .delete-btn {
-  margin-top: 1.2rem;
-  padding: 0.6rem;
-  width: 100%;
-  background-color: #e63946;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 0.35rem 0.7rem;
+  background-color: transparent;
+  color: #b23a3a;
+  border: 1px solid #e0b4b4;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 0.85rem;
+  align-self: flex-end;
+  width: auto;
+  transition: all 0.2s ease;
 }
 
 .delete-btn:hover {
-  background-color: #d62828;
+  background-color: #e63946;
+  color: white;
+  border-color: #e63946;
 }
 
 </style>
