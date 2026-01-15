@@ -59,7 +59,7 @@ onMounted(loadFavorites)
 
 <template>
   <section class="favorite-restaurant-list">
-  <h2>❤️ Favorite Restaurants</h2>
+  <h2>❤️ Favorite Restaurants ❤️</h2>
 
   <p v-if="loading" class="loading">
     Loading favorite restaurants...

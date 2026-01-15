@@ -8,7 +8,7 @@
     <div v-else class="restaurant-container">
       <!-- use RestaurantCard subcomponent -->
       <RestaurantCard
-        v-for="restaurant in restaurants"
+        v-for="restaurant in filteredRestaurants"
         :key="restaurant.id"
         :restaurant="restaurant"
         @delete="deleteRestaurant"
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import RestaurantCard from './RestaurantCard.vue'
 
 interface Restaurant {
@@ -35,6 +35,10 @@ interface Restaurant {
 
 const restaurants = ref<Restaurant[]>([])
 const loading = ref(true)
+
+const selectedCity = ref('')
+const selectedCuisine = ref('')
+const highRatingOnly = ref(false)
 
 // Backend URL
 const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com/restaurants'
@@ -77,8 +81,26 @@ async function toggleFavorite(id: number) {
     restaurant.favorite = !restaurant.favorite
   } catch (error) {
     console.error('Error toggling favorite:', error)
-  }
-}
+  }}
+
+  //Add Filter
+  const filteredRestaurants = computed(() => {
+    return restaurants.value.filter(r => {
+      const matchesCity =
+        !selectedCity.value || r.city === selectedCity.value
+
+      const matchesCuisine =
+        !selectedCuisine.value || r.cuisineType === selectedCuisine.value
+
+      const matchesRating =
+        !highRatingOnly.value || r.rating >= 4.5
+
+      return matchesCity && matchesCuisine && matchesRating
+    })
+  })
+
+
+
 </script>
 
 <style scoped>
@@ -120,5 +142,29 @@ async function toggleFavorite(id: number) {
   .restaurant-container {
     grid-template-columns: 1fr;
   }
+}
+
+/* Filter */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-bar select {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.rating-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  color: #333;
 }
 </style>
