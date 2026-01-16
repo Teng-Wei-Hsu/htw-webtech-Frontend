@@ -37,9 +37,25 @@ async function loadFavorites() {
 
 /**
  * Called when favorite state changes in RestaurantCard
- */
+
 function refreshFavorites() {
   loadFavorites()
+}
+ */
+
+//  ❤️TOGGLE FAVORITE (FIXED)
+async function toggleFavorite(id: number) {
+  try {
+    await fetch(`${API_URL}/${id}/favorite`, {
+      method: 'PATCH'
+    })
+
+    // Remove unfavorited restaurant from the list
+    favorites.value = favorites.value.filter(r => r.id !== id)
+
+  } catch (error) {
+    console.error('Error toggling favorite:', error)
+  }
 }
 
 /**
@@ -75,7 +91,7 @@ onMounted(loadFavorites)
       :key="restaurant.id"
       :restaurant="restaurant"
       @delete="deleteRestaurant"
-      @toggle-favorite="refreshFavorites"
+      @toggle-favorite="toggleFavorite"
     />
   </div>
   </section>
