@@ -72,6 +72,17 @@ const selectedCity = ref('')
 const selectedCuisine = ref('')
 const highRatingOnly = ref(false)
 
+
+// UNIQUE VALUES (TOP LEVEL — THIS FIXES YOUR ERROR)
+const uniqueCities = computed(() => {
+  return [...new Set(restaurants.value.map(r => r.city))].sort()
+})
+
+const uniqueCuisines = computed(() => {
+  return [...new Set(restaurants.value.map(r => r.cuisineType))].sort()
+})
+
+
 // Backend URL
 const API_URL = 'https://htw-webtech-backend-vvi9.onrender.com/restaurants'
 
