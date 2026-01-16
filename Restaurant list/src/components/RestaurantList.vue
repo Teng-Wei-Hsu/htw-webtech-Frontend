@@ -1,6 +1,38 @@
 <template>
   <section class="restaurant-list">
     <h2 class="page-title">Restaurants List</h2>
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <!-- City -->
+      <select v-model="selectedCity">
+        <option value="">All Cities</option>
+        <option
+          v-for="city in uniqueCities"
+          :key="city"
+          :value="city"
+        >
+          {{ city }}
+        </option>
+      </select>
+
+      <!-- Cuisine -->
+      <select v-model="selectedCuisine">
+        <option value="">All Cuisines</option>
+        <option
+          v-for="cuisine in uniqueCuisines"
+          :key="cuisine"
+          :value="cuisine"
+        >
+          {{ cuisine }}
+        </option>
+      </select>
+
+      <!-- Rating -->
+      <label class="rating-filter">
+        <input type="checkbox" v-model="highRatingOnly" />
+        Rating ≥ 4.5
+      </label>
+    </div>
 
 
     <p v-if="loading" class="loading">Loading restaurants...</p>
@@ -85,6 +117,14 @@ async function toggleFavorite(id: number) {
 
   //Add Filter
   const filteredRestaurants = computed(() => {
+    const uniqueCities = computed(() => {
+      return [...new Set(restaurants.value.map(r => r.city))].sort()
+    })
+
+    const uniqueCuisines = computed(() => {
+      return [...new Set(restaurants.value.map(r => r.cuisineType))].sort()
+    })
+
     return restaurants.value.filter(r => {
       const matchesCity =
         !selectedCity.value || r.city === selectedCity.value
