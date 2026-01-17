@@ -45,6 +45,7 @@
         :restaurant="restaurant"
         @delete="deleteRestaurant"
         @toggle-favorite="toggleFavorite"
+        @update="updateRestaurant"
       />
     </div>
   </section>
@@ -73,7 +74,7 @@ const selectedCuisine = ref('')
 const highRatingOnly = ref(false)
 
 
-// UNIQUE VALUES (TOP LEVEL — THIS FIXES YOUR ERROR)
+// UNIQUE VALUES (Filter)
 const uniqueCities = computed(() => {
   return [...new Set(restaurants.value.map(r => r.city))].sort()
 })
@@ -128,13 +129,6 @@ async function toggleFavorite(id: number) {
 
   //Add Filter
   const filteredRestaurants = computed(() => {
-    const uniqueCities = computed(() => {
-      return [...new Set(restaurants.value.map(r => r.city))].sort()
-    })
-
-    const uniqueCuisines = computed(() => {
-      return [...new Set(restaurants.value.map(r => r.cuisineType))].sort()
-    })
 
     return restaurants.value.filter(r => {
       const matchesCity =
@@ -149,6 +143,40 @@ async function toggleFavorite(id: number) {
       return matchesCity && matchesCuisine && matchesRating
     })
   })
+
+//Add Function edit
+async function updateRestaurant(updated: {
+  id: number
+  cuisineType: string
+  rating: number
+  reviews: string[]
+}) {
+  try {
+    const response = await fetch(`${API_URL}/${updated.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updated)
+    })
+
+    const savedRestaurant: Restaurant = await response.json()
+
+    // update local state
+    const index = restaurants.value.findIndex(r => r.id === updated.id)
+    if (index !== -1) {
+      restaurants.value[index] = {
+        ...restaurants.value[index],
+        cuisineType: savedRestaurant.cuisineType,
+        rating: savedRestaurant.rating,
+        reviews: savedRestaurant.reviews
+      }
+    }
+  } catch (error) {
+    console.error('Error updating restaurant:', error)
+  }
+}
+
 
 
 
