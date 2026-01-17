@@ -10,7 +10,9 @@
         <!-- Favorite button -->
         <button class="favorite-btn" @click="emitFavorite">
           {{ restaurant.favorite ? '❤️' : '🤍' }}
+
         </button>
+        <button class="edit-btn" @click="openEdit">✏️</button>
       </div>
     </div>
 
@@ -40,6 +42,33 @@
     <button class="delete-btn" @click="emitDelete">
       Delete
     </button>
+
+    <div v-if="isEditing" class="modal-overlay">
+      <div class="modal">
+        <h3>Edit Restaurant</h3>
+
+        <label>
+          Cuisine Type
+          <input v-model="editData.cuisineType" />
+        </label>
+
+        <label>
+          Rating
+          <input type="number" step="0.1" min="0" max="5" v-model.number="editData.rating" />
+        </label>
+
+        <label>
+          Reviews (comma separated)
+          <textarea v-model="editReviewsText"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button class="save-btn" @click="saveEdit">Save</button>
+          <button class="cancel-btn" @click="cancelEdit">Cancel</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -59,9 +88,28 @@ const props = defineProps<{
   restaurant: Restaurant
 }>()
 
+
+import { ref, computed } from 'vue'
+
+const isEditing = ref(false)
+
+const editData = ref({
+  cuisineType: props.restaurant.cuisineType,
+  rating: props.restaurant.rating,
+  reviews: [...props.restaurant.reviews]
+})
+
+const editReviewsText = computed({
+  get: () => editData.value.reviews.join(', '),
+  set: (value: string) => {
+    editData.value.reviews = value.split(',').map(r => r.trim())
+  }
+})
+
 const emit = defineEmits<{
   (e: 'delete', id: number): void
   (e: 'toggle-favorite', id: number): void
+  (e: 'update', id: number, payload: Partial<Restaurant>): void
 }>()
 
 function emitDelete() {
@@ -82,6 +130,29 @@ function emitFavorite() {
 
   emit('toggle-favorite', props.restaurant.id)
 }
+
+//Function for editing
+function openEdit() {
+  isEditing.value = true
+}
+
+function cancelEdit() {
+  isEditing.value = false
+}
+
+function saveEdit() {
+  if (props.restaurant.id === undefined) return
+
+  emit('update', props.restaurant.id, {
+    cuisineType: editData.value.cuisineType,
+    rating: editData.value.rating,
+    reviews: editData.value.reviews
+  })
+
+  isEditing.value = false
+}
+
+
 </script>
 
 <style scoped>
@@ -176,6 +247,57 @@ function emitFavorite() {
   background-color: #e63946;
   color: white;
   border-color: #e63946;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 320px;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.save-btn {
+  background: #1f7a63;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+}
+
+.cancel-btn {
+  background: #ccc;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
 }
 
 </style>
