@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 interface Restaurant {
-  id?: number
+  id: number
   name: string
   country: string
   city: string
@@ -109,7 +109,12 @@ const editReviewsText = computed({
 const emit = defineEmits<{
   (e: 'delete', id: number): void
   (e: 'toggle-favorite', id: number): void
-  (e: 'update', id: number, payload: Partial<Restaurant>): void
+  (e: 'update', payload: {
+    id: number
+    cuisineType: string
+    rating: number
+    reviews: string[]
+  }): void
 }>()
 
 function emitDelete() {
@@ -141,9 +146,8 @@ function cancelEdit() {
 }
 
 function saveEdit() {
-  if (props.restaurant.id === undefined) return
-
-  emit('update', props.restaurant.id, {
+  emit('update', {
+    id: props.restaurant.id,
     cuisineType: editData.value.cuisineType,
     rating: editData.value.rating,
     reviews: editData.value.reviews
