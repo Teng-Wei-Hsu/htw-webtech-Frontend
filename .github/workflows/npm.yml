@@ -1,8 +1,9 @@
 name: npm.yml Frontend CI
 on:
-push:
-  branches: [ main, develop ]
-  pull_request:
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   test:
