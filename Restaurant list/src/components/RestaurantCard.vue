@@ -10,9 +10,9 @@
         <!-- Favorite button -->
         <button class="favorite-btn" @click="emitFavorite">
           {{ restaurant.favorite ? '❤️' : '🤍' }}
-
         </button>
-        <button class="edit-btn" @click="openEdit">✏️</button>
+
+
       </div>
     </div>
 
@@ -38,10 +38,11 @@
       <p v-else>No reviews yet</p>
     </div>
 
-    <!-- Delete button -->
-    <button class="delete-btn" @click="emitDelete">
-      Delete
-    </button>
+    <!-- Delete button & Edit button -->
+    <div class="card-footer">
+      <button class="edit-btn" @click.stop="openEdit">Edit</button>
+      <button class="delete-btn" @click="emitDelete">Delete</button>
+    </div>
 
     <div v-if="isEditing" class="modal-overlay">
       <div class="modal">
@@ -298,12 +299,30 @@ async function saveEdit() {
   border-color: #e63946;
 }
 
-.edit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
 }
+
+.edit-btn {
+  background: transparent;
+  border: 1px solid #1f7a63;
+  color: #1f7a63;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: #1f7a63;
+  color: white;
+}
+
 
 .modal-overlay {
   position: fixed;
