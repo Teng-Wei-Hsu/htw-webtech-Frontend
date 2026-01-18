@@ -40,8 +40,8 @@
 
     <!-- Delete button & Edit button -->
     <div class="card-footer">
-      <button class="edit-btn" @click.stop="openEdit">Edit</button>
-      <button class="delete-btn" @click="emitDelete">Delete</button>
+      <button type="button" class="edit-btn" @click.stop="openEdit">Edit</button>
+      <button type="button" class="delete-btn" @click="emitDelete">Delete</button>
     </div>
 
     <div v-if="isEditing" class="modal-overlay">
@@ -69,6 +69,7 @@
 
         <div class="modal-actions">
           <button
+            type="button"
             class="save-btn"
             :disabled="!hasChanges || isSaving"
             @click="saveEdit"
@@ -77,6 +78,7 @@
           </button>
 
           <button
+            type="button"
             class="cancel-btn"
             :disabled="isSaving"
             @click="cancelEdit"
@@ -279,18 +281,23 @@ async function saveEdit() {
   padding-left: 1.2rem;
 }
 
-.delete-btn {
+.delete-btn,
+.edit-btn {
   margin-top: 1rem;
   padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: auto;
+  align-self: flex-end;     /* ← keeps it right-aligned */
+}
+
+/* Delete specific styles */
+.delete-btn {
   background-color: transparent;
   color: #b23a3a;
   border: 1px solid #e0b4b4;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  align-self: flex-end;
-  width: auto;
-  transition: all 0.2s ease;
 }
 
 .delete-btn:hover {
@@ -299,28 +306,24 @@ async function saveEdit() {
   border-color: #e63946;
 }
 
-
-.card-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.6rem;
-  margin-top: 1rem;
-}
-
+/* Edit specific styles */
 .edit-btn {
   background: transparent;
   border: 1px solid #1f7a63;
   color: #1f7a63;
-  padding: 0.35rem 0.7rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
 }
 
 .edit-btn:hover {
   background: #1f7a63;
   color: white;
+}
+
+/* Footer (unchanged) */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
 }
 
 
