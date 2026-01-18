@@ -40,7 +40,7 @@
 
     <!-- Delete button & Edit button -->
     <div class="card-footer">
-      <button type="button" class="edit-btn" @click.stop="openEdit">Edit</button>
+      <button type="button" class="edit-btn" @click.stop.prevent="openEdit">Edit</button>
       <button type="button" class="delete-btn" @click="emitDelete">Delete</button>
     </div>
 
