@@ -47,7 +47,7 @@
 
 
     <Teleport to="body">
-    <div v-if="isEditing" class="modal-overlay" @click="cancelEdit">
+    <div v-if="isEditing" class="modal-overlay" @click.self="cancelEdit">
       <div class="modal" @click.stop>>
         <h3>Edit Restaurant</h3>
 
