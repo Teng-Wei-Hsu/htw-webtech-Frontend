@@ -65,7 +65,6 @@ const props = defineProps<{
   restaurant: Restaurant
 }>()
 
-
 const emit = defineEmits<{
   (e: 'delete', id: number): void
   (e: 'toggle-favorite', id: number): void
