@@ -1,9 +1,6 @@
 name: npm.yml Frontend CI
 on:
-  push:
-    branches:
-      - main
-      - develop
+  [ push ]
 
 jobs:
   test:
@@ -17,10 +14,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: Restaurant list/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        working-directory: Restaurant list
 
       - name: Run unit tests
         run: npm run test:unit
+        working-directory: Restaurant list
