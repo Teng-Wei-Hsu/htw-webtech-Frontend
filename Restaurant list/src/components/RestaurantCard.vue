@@ -44,8 +44,8 @@
       <button type="button" class="delete-btn" @click="emitDelete">Delete</button>
     </div>
 
-    <div v-if="isEditing" class="modal-overlay">
-      <div class="modal">
+    <div v-if="isEditing" class="modal-overlay" @click="cancelEdit">
+      <div class="modal" @click.stop>>
         <h3>Edit Restaurant</h3>
 
         <label>
