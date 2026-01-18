@@ -44,6 +44,9 @@
       <button type="button" class="delete-btn" @click="emitDelete">Delete</button>
     </div>
 
+
+
+    <Teleport to="body">
     <div v-if="isEditing" class="modal-overlay" @click="cancelEdit">
       <div class="modal" @click.stop>>
         <h3>Edit Restaurant</h3>
@@ -88,6 +91,7 @@
         </div>
       </div>
     </div>
+    </Teleport>
 
   </div>
 </template>
