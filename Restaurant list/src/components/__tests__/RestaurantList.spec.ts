@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import RestaurantList from '../RestaurantList.vue'
 
 // Mock backend data
@@ -37,31 +37,65 @@ beforeEach(() => {
 describe('RestaurantList.vue', () => {
   it('renders restaurant list', async () => {
     const wrapper = mount(RestaurantList)
-
-    // wait for fetch + render
-    await new Promise(resolve => setTimeout(resolve, 0))
+    await flushPromises()
 
     expect(wrapper.text()).toContain('Pizza Place')
     expect(wrapper.text()).toContain('Sushi Bar')
   })
 
+  it('renders filter bar', async () => {
+    const wrapper = mount(RestaurantList)
+    await flushPromises()
+
+    expect(wrapper.find('.filter-bar').exists()).toBe(true)
+  })
+
   it('filters restaurants by city', async () => {
     const wrapper = mount(RestaurantList)
+    await flushPromises()
 
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    const select = wrapper.find('select')
-    await select.setValue('Rome')
+    const citySelect = wrapper.find('select')
+    await citySelect.setValue('Rome')
 
     expect(wrapper.text()).toContain('Pizza Place')
     expect(wrapper.text()).not.toContain('Sushi Bar')
   })
 
-  it('renders filter bar', async () => {
+  it('filters restaurants by cuisine', async () => {
     const wrapper = mount(RestaurantList)
+    await flushPromises()
 
-    await new Promise(resolve => setTimeout(resolve, 0))
+    const selects = wrapper.findAll('select')
+    expect(selects.length).toBeGreaterThan(1)
 
-    expect(wrapper.find('.filter-bar').exists()).toBe(true)
+    const cuisineSelect = selects[1]
+    await cuisineSelect.setValue('Japanese')
+
+    expect(wrapper.text()).toContain('Sushi Bar')
+    expect(wrapper.text()).not.toContain('Pizza Place')
+  })
+
+  it('filters restaurants by rating >= 4.5', async () => {
+    const wrapper = mount(RestaurantList)
+    await flushPromises()
+
+    const checkbox = wrapper.find('input[type="checkbox"]')
+    await checkbox.setValue(true)
+
+    expect(wrapper.text()).toContain('Pizza Place')
+    expect(wrapper.text()).not.toContain('Sushi Bar')
+  })
+
+  it('starts edit mode when edit is triggered', async () => {
+    const wrapper = mount(RestaurantList)
+    await flushPromises()
+
+    // find first RestaurantCard and emit edit
+    const card = wrapper.findComponent({ name: 'RestaurantCard' })
+    await card.vm.$emit('edit', mockRestaurants[0])
+
+    expect(wrapper.text()).toContain('Edit Restaurant')
+    expect(wrapper.text()).toContain('Pizza Place')
   })
 })
+
