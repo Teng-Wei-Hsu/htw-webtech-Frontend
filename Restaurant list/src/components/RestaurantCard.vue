@@ -323,6 +323,14 @@ async function saveEdit() {
 }
 
 /* Footer (unchanged) */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -330,17 +338,14 @@ async function saveEdit() {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;  /* Make sure it's on top */
+  z-index: 1000;
 }
 
 .modal {
   background: #fff;
   padding: 1.5rem;
   border-radius: 12px;
-  width: 320px;   /* or 90vw / max-width: 500px; for responsiveness */
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  width: 320px;
 }
 
 .modal label {
@@ -349,46 +354,25 @@ async function saveEdit() {
   margin-bottom: 0.8rem;
 }
 
-.modal label input,
-.modal label textarea {
-  margin-top: 0.3rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
 .modal-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .save-btn {
   background: #1f7a63;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 6px;
-  cursor: pointer;
-}
-
-.save-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .cancel-btn {
   background: #ccc;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 6px;
-  cursor: pointer;
-}
-
-.error {
-  color: #e63946;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
 }
 
 </style>
