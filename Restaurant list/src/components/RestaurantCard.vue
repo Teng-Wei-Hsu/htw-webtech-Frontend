@@ -322,57 +322,83 @@ async function saveEdit() {
   color: white;
 }
 
-/* Footer (unchanged) */
-.card-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.6rem;
-  margin-top: 1rem;
-}
 
+</style>
 
+<style>
+/* NON-SCOPED styles for the teleported modal – these apply globally */
 .modal-overlay {
-  position: fixed;
+  position: fixed !important;
   inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent dark overlay */
+  display: flex !important;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000 !important; /* very high to be on top of everything */
 }
 
 .modal {
-  background: #fff;
+  background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  width: 320px;
+  width: 90%;
+  max-width: 400px; /* adjust as needed */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal h3 {
+  margin-top: 0;
+  color: #1f7a63;
 }
 
 .modal label {
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.modal input,
+.modal textarea {
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 .modal-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .save-btn {
   background: #1f7a63;
   color: white;
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .cancel-btn {
   background: #ccc;
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 6px;
+  cursor: pointer;
 }
 
+.error {
+  color: #e63946;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
 </style>
