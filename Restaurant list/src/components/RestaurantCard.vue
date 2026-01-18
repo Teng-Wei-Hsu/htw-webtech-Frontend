@@ -40,58 +40,11 @@
 
     <!-- Delete button & Edit button -->
     <div class="card-footer">
-      <button type="button" class="edit-btn" @click.stop.prevent="openEdit">Edit</button>
+      <button type="button" class="edit-btn" @click="$emit('edit', restaurant)">
+        Edit
+      </button>
       <button type="button" class="delete-btn" @click="emitDelete">Delete</button>
     </div>
-
-
-
-    <Teleport to="body">
-    <div v-if="isEditing" class="modal-overlay" @click.self="cancelEdit">
-      <div class="modal" @click.stop>>
-        <h3>Edit Restaurant</h3>
-
-        <label>
-          Cuisine Type
-          <input v-model="editData.cuisineType" />
-        </label>
-
-        <label>
-          Rating
-          <input type="number" step="0.1" min="0" max="5" v-model.number="editData.rating" />
-        </label>
-
-        <label>
-          Reviews (comma separated)
-          <textarea v-model="editReviewsText"></textarea>
-        </label>
-
-        <p v-if="errorMessage" class="error">
-          {{ errorMessage }}
-        </p>
-
-        <div class="modal-actions">
-          <button
-            type="button"
-            class="save-btn"
-            :disabled="!hasChanges || isSaving"
-            @click="saveEdit"
-          >
-            {{ isSaving ? 'Saving...' : 'Save' }}
-          </button>
-
-          <button
-            type="button"
-            class="cancel-btn"
-            :disabled="isSaving"
-            @click="cancelEdit"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-    </Teleport>
 
   </div>
 </template>
@@ -113,43 +66,10 @@ const props = defineProps<{
 }>()
 
 
-import { ref, computed } from 'vue'
-
-const isEditing = ref(false)
-const isSaving = ref(false)
-const errorMessage = ref('')
-
-const editData = ref({
-  cuisineType: props.restaurant.cuisineType,
-  rating: props.restaurant.rating,
-  reviews: [...props.restaurant.reviews]
-})
-
-const editReviewsText = computed({
-  get: () => editData.value.reviews.join(', '),
-  set: (value: string) => {
-    editData.value.reviews = value.split(',').map(r => r.trim())
-  }
-})
-
-const hasChanges = computed(() => {
-  return (
-    editData.value.cuisineType !== props.restaurant.cuisineType ||
-    editData.value.rating !== props.restaurant.rating ||
-    editData.value.reviews.join(',') !== props.restaurant.reviews.join(',')
-  )
-})
-
-
 const emit = defineEmits<{
   (e: 'delete', id: number): void
   (e: 'toggle-favorite', id: number): void
-  (e: 'update', payload: {
-    id: number
-    cuisineType: string
-    rating: number
-    reviews: string[]
-  }): void
+  (e: 'edit', restaurant: Restaurant): void
 }>()
 
 function emitDelete() {
@@ -169,43 +89,6 @@ function emitFavorite() {
   }
 
   emit('toggle-favorite', props.restaurant.id)
-}
-
-//Function for editing
-function openEdit() {
-  editData.value = {
-    cuisineType: props.restaurant.cuisineType,
-    rating: props.restaurant.rating,
-    reviews: [...props.restaurant.reviews]
-  }
-  errorMessage.value = ''
-  isEditing.value = true
-}
-
-function cancelEdit() {
-  isEditing.value = false
-}
-
-async function saveEdit() {
-  if (!props.restaurant.id) return
-
-  isSaving.value = true
-  errorMessage.value = ''
-
-  try {
-    emit('update', {
-      id: props.restaurant.id,
-      cuisineType: editData.value.cuisineType,
-      rating: editData.value.rating,
-      reviews: editData.value.reviews
-    })
-
-    isEditing.value = false
-  } catch (e) {
-    errorMessage.value = 'Failed to save changes. Please try again.'
-  } finally {
-    isSaving.value = false
-  }
 }
 
 
@@ -325,80 +208,4 @@ async function saveEdit() {
 
 </style>
 
-<style>
-/* NON-SCOPED styles for the teleported modal – these apply globally */
-.modal-overlay {
-  position: fixed !important;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5); /* semi-transparent dark overlay */
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000 !important; /* very high to be on top of everything */
-}
 
-.modal {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px; /* adjust as needed */
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.modal h3 {
-  margin-top: 0;
-  color: #1f7a63;
-}
-
-.modal label {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-}
-
-.modal input,
-.modal textarea {
-  margin-top: 0.3rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-
-.save-btn {
-  background: #1f7a63;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.save-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.cancel-btn {
-  background: #ccc;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.error {
-  color: #e63946;
-  margin-top: 0.8rem;
-  font-size: 0.9rem;
-}
-</style>

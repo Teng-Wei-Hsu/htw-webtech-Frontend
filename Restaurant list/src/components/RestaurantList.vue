@@ -1,6 +1,42 @@
 <template>
   <section class="restaurant-list">
     <h2 class="page-title">Restaurants List</h2>
+
+    <!-- Shared Edit Form (appears only when editing) -->
+    <div v-if="editingId !== null" class="edit-form">
+      <h3>Edit Restaurant: {{ editingRestaurant?.name || 'Loading...' }}</h3>
+
+      <div class="form-grid">
+        <label>
+          Cuisine Type
+          <input v-model="editForm.cuisineType" />
+        </label>
+
+        <label>
+          Rating
+          <input type="number" step="0.1" min="0" max="5" v-model.number="editForm.rating" />
+        </label>
+
+        <label>
+          Reviews (comma separated)
+          <textarea v-model="editReviewsText"></textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button
+          class="save-btn"
+          :disabled="!hasChanges || isSaving"
+          @click="saveEdit"
+        >
+          {{ isSaving ? 'Saving...' : 'Update' }}
+        </button>
+        <button class="cancel-btn" :disabled="isSaving" @click="cancelEdit">
+          Cancel
+        </button>
+      </div>
+    </div>
+
     <!-- FILTER BAR -->
     <div class="filter-bar">
       <!-- City -->
@@ -45,7 +81,7 @@
         :restaurant="restaurant"
         @delete="deleteRestaurant"
         @toggle-favorite="toggleFavorite"
-        @update="updateRestaurant"
+        @edit="startEdit"
       />
     </div>
   </section>
@@ -73,6 +109,37 @@ const selectedCity = ref('')
 const selectedCuisine = ref('')
 const highRatingOnly = ref(false)
 
+// Edit state
+const editingId = ref<number | null>(null)
+const editForm = ref({
+  cuisineType: '',
+  rating: 0,
+  reviews: [] as string[]
+})
+const isSaving = ref(false)
+
+const editingRestaurant = computed(() =>
+  restaurants.value.find(r => r.id === editingId.value) || null
+)
+
+// Computed for reviews text
+const editReviewsText = computed({
+  get: () => editForm.value.reviews.join(', '),
+  set: (value: string) => {
+    editForm.value.reviews = value.split(',').map(r => r.trim()).filter(Boolean)
+  }
+})
+
+const hasChanges = computed(() => {
+  const original = restaurants.value.find(r => r.id === editingId.value)
+  if (!original) return false
+
+  return (
+    editForm.value.cuisineType !== original.cuisineType ||
+    editForm.value.rating !== original.rating ||
+    editForm.value.reviews.join(',') !== original.reviews.join(',')
+  )
+})
 
 // UNIQUE VALUES (Filter)
 const uniqueCities = computed(() => {
@@ -97,6 +164,45 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+// Start editing
+function startEdit(restaurant: any) {
+  editingId.value = restaurant.id
+  editForm.value = {
+    cuisineType: restaurant.cuisineType,
+    rating: restaurant.rating,
+    reviews: [...restaurant.reviews]
+  }
+}
+
+// Save changes
+async function saveEdit() {
+  if (editingId.value === null) return
+
+  isSaving.value = true
+
+  const payload = {
+    id: editingId.value,
+    cuisineType: editForm.value.cuisineType,
+    rating: editForm.value.rating,
+    reviews: editForm.value.reviews
+  }
+
+  try {
+    await updateRestaurant(payload)
+    cancelEdit()
+  } catch (error) {
+    console.error('Save failed:', error)
+    alert('Failed to update restaurant. Please try again.')
+  } finally {
+    isSaving.value = false
+  }
+}
+
+function cancelEdit() {
+  editingId.value = null
+  editForm.value = { cuisineType: '', rating: 0, reviews: [] }
+}
 
 // DELETE restaurant
 async function deleteRestaurant(id: number) {
@@ -154,37 +260,24 @@ async function updateRestaurant(updated: {
   try {
     const response = await fetch(`${API_URL}/${updated.id}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updated)
     })
 
+    if (!response.ok) throw new Error('Update failed')
+
     const savedRestaurant: Restaurant = await response.json()
 
-    // update local state
     const index = restaurants.value.findIndex(r => r.id === updated.id)
-
-    if (index === -1) {
-      console.error('Restaurant not found in local state', updated.id)
-      return
-    }
-
-
-    restaurants.value[index] = {
-      id: savedRestaurant.id,
-      name: savedRestaurant.name,
-      country: savedRestaurant.country,
-      city: savedRestaurant.city,
-      favorite: savedRestaurant.favorite,
-      cuisineType: savedRestaurant.cuisineType,
-      rating: savedRestaurant.rating,
-      reviews: savedRestaurant.reviews
+    if (index !== -1) {
+      restaurants.value[index] = savedRestaurant
     }
   } catch (error) {
     console.error('Error updating restaurant:', error)
+    throw error // rethrow for saveEdit to catch
   }
 }
+
 
 
 
@@ -254,5 +347,64 @@ async function updateRestaurant(updated: {
   gap: 0.4rem;
   font-size: 0.95rem;
   color: #333;
+}
+
+.edit-form {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.edit-form h3 {
+  margin-top: 0;
+  color: #1f7a63;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-grid input,
+.form-grid textarea {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.form-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.save-btn {
+  background: #1f7a63;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+}
+
+.cancel-btn {
+  background: #ccc;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
 </style>
