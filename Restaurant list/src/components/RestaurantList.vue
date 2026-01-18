@@ -164,13 +164,22 @@ async function updateRestaurant(updated: {
 
     // update local state
     const index = restaurants.value.findIndex(r => r.id === updated.id)
-    if (index !== -1) {
-      restaurants.value[index] = {
-        ...restaurants.value[index],
-        cuisineType: savedRestaurant.cuisineType,
-        rating: savedRestaurant.rating,
-        reviews: savedRestaurant.reviews
-      }
+
+    if (index === -1) {
+      console.error('Restaurant not found in local state', updated.id)
+      return
+    }
+
+
+    restaurants.value[index] = {
+      id: savedRestaurant.id,
+      name: savedRestaurant.name,
+      country: savedRestaurant.country,
+      city: savedRestaurant.city,
+      favorite: savedRestaurant.favorite,
+      cuisineType: savedRestaurant.cuisineType,
+      rating: savedRestaurant.rating,
+      reviews: savedRestaurant.reviews
     }
   } catch (error) {
     console.error('Error updating restaurant:', error)

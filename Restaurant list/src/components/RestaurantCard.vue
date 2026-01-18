@@ -62,9 +62,26 @@
           <textarea v-model="editReviewsText"></textarea>
         </label>
 
+        <p v-if="errorMessage" class="error">
+          {{ errorMessage }}
+        </p>
+
         <div class="modal-actions">
-          <button class="save-btn" @click="saveEdit">Save</button>
-          <button class="cancel-btn" @click="cancelEdit">Cancel</button>
+          <button
+            class="save-btn"
+            :disabled="!hasChanges || isSaving"
+            @click="saveEdit"
+          >
+            {{ isSaving ? 'Saving...' : 'Save' }}
+          </button>
+
+          <button
+            class="cancel-btn"
+            :disabled="isSaving"
+            @click="cancelEdit"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -92,6 +109,8 @@ const props = defineProps<{
 import { ref, computed } from 'vue'
 
 const isEditing = ref(false)
+const isSaving = ref(false)
+const errorMessage = ref('')
 
 const editData = ref({
   cuisineType: props.restaurant.cuisineType,
@@ -105,6 +124,15 @@ const editReviewsText = computed({
     editData.value.reviews = value.split(',').map(r => r.trim())
   }
 })
+
+const hasChanges = computed(() => {
+  return (
+    editData.value.cuisineType !== props.restaurant.cuisineType ||
+    editData.value.rating !== props.restaurant.rating ||
+    editData.value.reviews.join(',') !== props.restaurant.reviews.join(',')
+  )
+})
+
 
 const emit = defineEmits<{
   (e: 'delete', id: number): void
@@ -138,6 +166,12 @@ function emitFavorite() {
 
 //Function for editing
 function openEdit() {
+  editData.value = {
+    cuisineType: props.restaurant.cuisineType,
+    rating: props.restaurant.rating,
+    reviews: [...props.restaurant.reviews]
+  }
+  errorMessage.value = ''
   isEditing.value = true
 }
 
@@ -145,15 +179,26 @@ function cancelEdit() {
   isEditing.value = false
 }
 
-function saveEdit() {
-  emit('update', {
-    id: props.restaurant.id,
-    cuisineType: editData.value.cuisineType,
-    rating: editData.value.rating,
-    reviews: editData.value.reviews
-  })
+async function saveEdit() {
+  if (!props.restaurant.id) return
 
-  isEditing.value = false
+  isSaving.value = true
+  errorMessage.value = ''
+
+  try {
+    emit('update', {
+      id: props.restaurant.id,
+      cuisineType: editData.value.cuisineType,
+      rating: editData.value.rating,
+      reviews: editData.value.reviews
+    })
+
+    isEditing.value = false
+  } catch (e) {
+    errorMessage.value = 'Failed to save changes. Please try again.'
+  } finally {
+    isSaving.value = false
+  }
 }
 
 
