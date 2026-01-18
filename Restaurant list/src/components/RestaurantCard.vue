@@ -167,7 +167,11 @@ function emitFavorite() {
   margin-top: 0.4rem;
   padding-left: 1.2rem;
 }
-
+.card-footer {
+  display: flex;
+  justify-content: space-between; /* 👈 magic line */
+  margin-top: auto;               /* pushes footer to bottom */
+}
 .delete-btn,
 .edit-btn {
   margin-top: 1rem;
@@ -177,7 +181,6 @@ function emitFavorite() {
   cursor: pointer;
   transition: all 0.2s ease;
   width: auto;
-  align-self: flex-end;     /* ← keeps it right-aligned */
 }
 
 /* Delete specific styles */
